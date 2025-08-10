@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magical Typing Test - Harry Potter Edition</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:wght@400;600&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Crimson Text', serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* Magical particles background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: #ffd700;
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: float 6s infinite ease-in-out;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.8; }
+            50% { transform: translateY(-20px) rotate(180deg); opacity: 0.3; }
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .title {
+            font-family: 'Cinzel', serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #ffd700, #ffed4e, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+            margin-bottom: 10px;
+            animation: shimmer 3s ease-in-out infinite;
+        }
+        
+        @keyframes shimmer {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.3); }
+        }
+        
+        .subtitle {
+            color: #c0c0c0;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+        
+        .house-selector {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .house-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            font-family: 'Cinzel', serif;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .house-btn:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+        
+        .house-btn:hover:before {
+            left: 100%;
+        }
+        
+        .gryffindor {
+            background: linear-gradient(135deg, #7c0a0a, #d4af37);
+            color: #ffd700;
+            border: 2px solid #d4af37;
+        }
+        
+        .slytherin {
+            background: linear-gradient(135deg, #0d4d0d, #c0c0c0);
+            color: #c0c0c0;
+            border: 2px solid #0d4d0d;
+        }
+        
+        .ravenclaw {
+            background: linear-gradient(135deg, #0e1a40, #946b2d);
+            color: #946b2d;
+            border: 2px solid #946b2d;
+        }
+        
+        .hufflepuff {
+            background: linear-gradient(135deg, #eeb939, #372e29);
+            color: #372e29;
+            border: 2px solid #372e29;
+        }
+        
+        .house-btn.active {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+        
+        .game-area {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 20px;
+            padding: 30px;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            margin-bottom: 30px;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-box {
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-box:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.2);
+        }
+        
+        .stat-label {
+            color: #c0c0c0;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        
+        .stat-value {
+            color: #ffd700;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+        
+        .text-display {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #e0e0e0;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .char {
+            transition: all 0.1s ease;
+        }
+        
+        .char.correct {
+            background-color: rgba(76, 175, 80, 0.3);
+            color: #4caf50;
+        }
+        
+        .char.incorrect {
+            background-color: rgba(244, 67, 54, 0.3);
+            color: #f44336;
+        }
+        
+        .char.current {
+            background-color: rgba(255, 215, 0, 0.4);
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .typing-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            font-size: 1.1rem;
+            font-family: 'Crimson Text', serif;
+            outline: none;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+        
+        .typing-input:focus {
+            border-color: #ffd700;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: #1a1a2e;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Cinzel', serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 215, 0, 0.3);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .results {
+            display: none;
+            text-align: center;
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 20px;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+        }
+        
+        .results.show {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .results h2 {
+            color: #ffd700;
+            font-family: 'Cinzel', serif;
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+        
+        .accuracy-high { color: #4caf50; }
+        .accuracy-medium { color: #ff9800; }
+        .accuracy-low { color: #f44336; }
+        
+        .spell-category {
+            margin-bottom: 15px;
+        }
+        
+        .spell-label {
+            color: #ffd700;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2.5rem;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+            
+            .house-selector {
+                gap: 10px;
+            }
+            
+            .house-btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    
+    <div class="container">
+        <div class="header">
+            <h1 class="title">⚡ Magical Typing Test ⚡</h1>
+            <p class="subtitle">Test your magical typing skills with spells from the wizarding world!</p>
+            
+            <div class="house-selector">
+                <button class="house-btn gryffindor active" data-house="gryffindor">
+                    🦁 Gryffindor
+                </button>
+                <button class="house-btn slytherin" data-house="slytherin">
+                    🐍 Slytherin
+                </button>
+                <button class="house-btn ravenclaw" data-house="ravenclaw">
+                    🦅 Ravenclaw
+                </button>
+                <button class="house-btn hufflepuff" data-house="hufflepuff">
+                    🦡 Hufflepuff
+                </button>
+            </div>
+        </div>
+        
+        <div class="game-area">
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="stat-label">Words per Minute</div>
+                    <div class="stat-value" id="wpm">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Accuracy</div>
+                    <div class="stat-value" id="accuracy">100%</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Time</div>
+                    <div class="stat-value" id="timer">60s</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Characters</div>
+                    <div class="stat-value" id="characters">0/0</div>
+                </div>
+            </div>
+            
+            <div class="spell-category">
+                <div class="spell-label" id="currentSpellType">🪄 Defensive Spells</div>
+            </div>
+            
+            <div class="text-display" id="textDisplay">
+                Click "Start Test" to begin your magical typing journey!
+            </div>
+            
+            <input type="text" class="typing-input" id="typingInput" placeholder="Your magical typing will appear here..." disabled>
+            
+            <div class="controls">
+                <button class="btn" id="startBtn" onclick="startTest()">
+                    <i class="fas fa-play"></i> Start Test
+                </button>
+                <button class="btn" id="resetBtn" onclick="resetTest()" disabled>
+                    <i class="fas fa-redo"></i> Reset
+                </button>
+                <button class="btn" onclick="changeSpells()">
+                    <i class="fas fa-magic"></i> Change Spells
+                </button>
+            </div>
+            
+            <div class="results" id="results">
+                <h2>🏆 Magical Results 🏆</h2>
+                <div id="finalResults"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Spell collections by category
+        const spellCollections = {
+            defensive: {
+                name: "🛡️ Defensive Spells",
+                texts: [
+                    "Expelliarmus! Protego! Stupefy! The basic defensive spells every wizard must master for protection against dark forces.",
+                    "Expecto Patronum! This powerful charm conjures a guardian to protect against dementors and other dark creatures.",
+                    "Protego Totalum creates a protective barrier around an area, shielding it from various magical attacks and intrusions.",
+                    "Riddikulus transforms a boggart into something amusing, using laughter as the most effective defense against fear."
+                ]
+            },
+            charms: {
+                name: "✨ Charms & Enchantments", 
+                texts: [
+                    "Wingardium Leviosa! The levitation charm requires precise wand movement and proper pronunciation to make objects float.",
+                    "Alohomora unlocks doors and windows, though it cannot open passages protected by more powerful magical barriers.",
+                    "Lumos illuminates the tip of a wand with bright light, while Nox extinguishes the magical glow instantly.",
+                    "Reparo mends broken objects by reversing damage, restoring them to their original undamaged condition."
+                ]
+            },
+            potions: {
+                name: "🧪 Potions & Ingredients",
+                texts: [
+                    "Polyjuice Potion requires lacewing flies, leeches, powdered bicorn horn, knotgrass, fluxweed, and shredded boomslang skin.",
+                    "Felix Felicis, known as liquid luck, must brew for six months and includes ashwinder eggs and squill bulb.",
+                    "Veritaserum is a powerful truth serum requiring hellebore essence, moonstone, and syrup of arnica for proper brewing.",
+                    "Amortentia, the most powerful love potion, creates different aromas for each person based on what attracts them most."
+                ]
+            },
+            creatures: {
+                name: "🐲 Magical Creatures",
+                texts: [
+                    "Dragons are among the most dangerous magical creatures, with species including Hungarian Horntail, Chinese Fireball, and Norwegian Ridgeback.",
+                    "Hippogriffs demand respect and proper approach; bow deeply and wait for them to bow back before attempting any interaction.",
+                    "Thestrals are winged skeletal horses visible only to those who have witnessed death, often misunderstood as omens of doom.",
+                    "Phoenix feathers are powerful wand cores, and phoenix song can inspire courage in the pure of heart while striking fear into evil."
+                ]
+            }
+        };
+        
+        let currentSpellType = 'defensive';
+        let currentText = '';
+        let userInput = '';
+        let startTime = null;
+        let timeLimit = 60;
+        let timer = null;
+        let isTestActive = false;
+        let currentCharIndex = 0;
+        let correctChars = 0;
+        let totalChars = 0;
+        let selectedHouse = 'gryffindor';
+        
+        // Initialize particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 4 + 4) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // House selection
+        document.querySelectorAll('.house-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.house-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                selectedHouse = this.dataset.house;
+            });
+        });
+        
+        function changeSpells() {
+            const types = Object.keys(spellCollections);
+            const currentIndex = types.indexOf(currentSpellType);
+            currentSpellType = types[(currentIndex + 1) % types.length];
+            document.getElementById('currentSpellType').textContent = spellCollections[currentSpellType].name;
+            
+            if (!isTestActive) {
+                document.getElementById('textDisplay').textContent = 'Click "Start Test" to begin your magical typing journey!';
+            }
+        }
+        
+        function getRandomText() {
+            const texts = spellCollections[currentSpellType].texts;
+            return texts[Math.floor(Math.random() * texts.length)];
+        }
+        
+        function startTest() {
+            currentText = getRandomText();
+            userInput = '';
+            currentCharIndex = 0;
+            correctChars = 0;
+            totalChars = 0;
+            startTime = new Date().getTime();
+            isTestActive = true;
+            
+            document.getElementById('startBtn').disabled = true;
+            document.getElementById('resetBtn').disabled = false;
+            document.getElementById('typingInput').disabled = false;
+            document.getElementById('typingInput').focus();
+            document.getElementById('results').classList.remove('show');
+            
+            displayText();
+            startTimer();
+        }
+        
+        function displayText() {
+            const display = document.getElementById('textDisplay');
+            let html = '';
+            
+            for (let i = 0; i < currentText.length; i++) {
+                let className = 'char';
+                if (i < userInput.length) {
+                    className += userInput[i] === currentText[i] ? ' correct' : ' incorrect';
+                } else if (i === userInput.length) {
+                    className += ' current';
+                }
+                html += `<span class="${className}">${currentText[i]}</span>`;
+            }
+            
+            display.innerHTML = html;
+        }
+        
+        function startTimer() {
+            let timeLeft = timeLimit;
+            timer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer').textContent = timeLeft + 's';
+                
+                if (timeLeft <= 0) {
+                    endTest();
+                }
+            }, 1000);
+        }
+        
+        function calculateWPM() {
+            if (!startTime) return 0;
+            const timeElapsed = (new Date().getTime() - startTime) / 1000 / 60; // minutes
+            const wordsTyped = correctChars / 5; // Standard: 5 characters = 1 word
+            return Math.round(wordsTyped / timeElapsed) || 0;
+        }
+        
+        function calculateAccuracy() {
+            if (totalChars === 0) return 100;
+            return Math.round((correctChars / totalChars) * 100);
+        }
+        
+        function updateStats() {
+            document.getElementById('wpm').textContent = calculateWPM();
+            document.getElementById('accuracy').textContent = calculateAccuracy() + '%';
+            document.getElementById('characters').textContent = `${userInput.length}/${currentText.length}`;
+        }
+        
+        function endTest() {
+            isTestActive = false;
+            clearInterval(timer);
+            
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('resetBtn').disabled = true;
+            document.getElementById('typingInput').disabled = true;
+            
+            showResults();
+        }
+        
+        function showResults() {
+            const wpm = calculateWPM();
+            const accuracy = calculateAccuracy();
+            const timeElapsed = Math.round((new Date().getTime() - startTime) / 1000);
+            
+            let houseBonus = '';
+            let accuracyClass = '';
+            
+            if (accuracy >= 95) {
+                accuracyClass = 'accuracy-high';
+                houseBonus = getHouseBonus(selectedHouse, 'excellent');
+            } else if (accuracy >= 80) {
+                accuracyClass = 'accuracy-medium'; 
+                houseBonus = getHouseBonus(selectedHouse, 'good');
+            } else {
+                accuracyClass = 'accuracy-low';
+                houseBonus = getHouseBonus(selectedHouse, 'practice');
+            }
+            
+            const resultsHTML = `
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 20px;">
+                    <div class="stat-box">
+                        <div class="stat-label">Final WPM</div>
+                        <div class="stat-value">${wpm}</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Accuracy</div>
+                        <div class="stat-value ${accuracyClass}">${accuracy}%</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Time Used</div>
+                        <div class="stat-value">${timeElapsed}s</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Characters Typed</div>
+                        <div class="stat-value">${userInput.length}</div>
+                    </div>
+                </div>
+                <div style="background: rgba(255,215,0,0.1); border-radius: 10px; padding: 20px; margin-top: 20px;">
+                    <h3 style="color: #ffd700; margin-bottom: 10px;">🏠 ${selectedHouse.charAt(0).toUpperCase() + selectedHouse.slice(1)} House Evaluation</h3>
+                    <p style="color: #e0e0e0; font-size: 1.1rem;">${houseBonus}</p>
+                </div>
+            `;
+            
+            document.getElementById('finalResults').innerHTML = resultsHTML;
+            document.getElementById('results').classList.add('show');
+        }
+        
+        function getHouseBonus(house, performance) {
+            const messages = {
+                gryffindor: {
+                    excellent: "🦁 Outstanding bravery in your typing! You faced those letters with true Gryffindor courage and emerged victorious!",
+                    good: "⚡ Good effort, brave wizard! Your courage shows through your typing, though a bit more practice will make you unstoppable!",
+                    practice: "🗡️ Every brave Gryffindor starts somewhere! Keep practicing with the same courage you show in battle!"
+                },
+                slytherin: {
+                    excellent: "🐍 Excellent cunning and precision! Your calculated typing approach shows true Slytherin ambition and skill!",
+                    good: "💎 Impressive resourcefulness! Your Slytherin determination is evident, continue honing your craft!",
+                    practice: "🏰 Ambition requires patience, young Slytherin. Master these skills and achieve greatness!"
+                },
+                ravenclaw: {
+                    excellent: "🦅 Brilliant intellectual performance! Your wisdom and wit shine through every perfectly typed character!",
+                    good: "📚 Well done, scholarly wizard! Your Ravenclaw intelligence guides your fingers across the keys!",
+                    practice: "🔮 Knowledge comes through practice, wise Ravenclaw. Continue your studies of the typing arts!"
+                },
+                hufflepuff: {
+                    excellent: "🦡 Wonderfully patient and dedicated work! Your Hufflepuff loyalty to accuracy is truly admirable!",
+                    good: "🌻 Your hard work and dedication show! Keep up the steady Hufflepuff persistence!",
+                    practice: "🍯 Patience and practice, dear Hufflepuff! Your dedication will lead to magical typing mastery!"
+                }
+            };
+            
+            return messages[house][performance];
+        }
+        
+        function resetTest() {
+            clearInterval(timer);
+            isTestActive = false;
+            userInput = '';
+            currentCharIndex = 0;
+            correctChars = 0;
+            totalChars = 0;
+            startTime = null;
+            
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('resetBtn').disabled = true;
+            document.getElementById('typingInput').disabled = true;
+            document.getElementById('typingInput').value = '';
+            document.getElementById('textDisplay').textContent = 'Click "Start Test" to begin your magical typing journey!';
+            document.getElementById('results').classList.remove('show');
+            
+            // Reset stats
+            document.getElementById('wpm').textContent = '0';
+            document.getElementById('accuracy').textContent = '100%';
+            document.getElementById('timer').textContent = '60s';
+            document.getElementById('characters').textContent = '0/0';
+        }
+        
+        // Typing input handler
+        document.getElementById('typingInput').addEventListener('input', function(e) {
+            if (!isTestActive) return;
+            
+            userInput = e.target.value;
+            totalChars = Math.max(totalChars, userInput.length);
+            
+            // Count correct characters
+            correctChars = 0;
+            for (let i = 0; i < userInput.length && i < currentText.length; i++) {
+                if (userInput[i] === currentText[i]) {
+                    correctChars++;
+                }
+            }
+            
+            displayText();
+            updateStats();
+            
+            // Check if test is complete
+            if (userInput.length >= currentText.length) {
+                endTest();
+            }
+        });
+        
+        // Prevent pasting
+        document.getElementById('typingInput').addEventListener('paste', function(e) {
+            e.preventDefault();
+        });
+        
+        // Initialize the app
+        createParticles();
+        document.getElementById('currentSpellType').textContent = spellCollections[currentSpellType].name;
+    </script>
+</body>
+</html>
